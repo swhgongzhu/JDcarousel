@@ -2,7 +2,7 @@
 京东轮播图（渐隐渐现版）
 ## 体验地址：
 1. [轮播图](https://wuxianqiang.github.io/JDcarousel/)
-2. [代码](https://wuxianqiang.github.io/JDcarousel/)
+2. [代码](https://github.com/wuxianqiang/JDcarousel/blob/gh-pages/index.html)
 
 ----------------------------------------------------------------------------------
 
