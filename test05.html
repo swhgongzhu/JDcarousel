@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动画库</title>
+    <style>
+        #box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script src="./utils.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./tween.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        // 指定时间运动动画 方法一：加步长，方法二：加时间
+        var box = document.getElementById('box');
+        // myanimation(box, {top: 400, left: 500},1000)
+        myanimation(box, {
+            top: 400,
+            left: 500
+        }, 1000, function () {
+            utils.css(this,"background","yellow");
+        })
+    </script>
+</body>
+
+</html>

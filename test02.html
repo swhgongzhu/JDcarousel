@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>在指定时间实现单方向运算运动</title>
+    <style>
+        #box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script src="./utils.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./tween.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        // 指定时间运动动画 方法一：加步长，方法二：加时间
+        var box = document.getElementById('box');
+        var maxLeft = utils.win("clientWidth") - box.offsetWidth;
+        var duration = 2000;
+        var step = maxLeft / duration * 10;
+        var timer = window.setInterval(function () {
+            var curLeft = utils.css(box, "left");
+            if (curLeft + step > maxLeft) {
+                utils.css(box, "left", maxLeft);
+                window.clearInterval(timer);
+                return;
+            }
+            curLeft += step;
+            utils.css(box, "left", curLeft);
+        }, 10)
+        //动画公式
+        /*
+        function linear(t, b, c, d) {
+            return c * t / d + b
+        }
+        var target = utils.win("clientWidth") - box.offsetWidth;
+        var begin = utils.css(box, "left");
+        var change = target - begin;
+        var duration = 2000;
+        var time = 0;
+
+
+        var timer = window.setInterval(function () {
+            time += 10;
+            if (time > duration) {
+                utils.css(box, "left", target);
+                window.clearInterval(timer);
+                return;
+            }
+            var curLeft = linear(time, begin, change, duration)
+            utils.css(box, "left", curLeft);
+        }, 10)
+        */
+    </script>
+</body>
+
+</html>

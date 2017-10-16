@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JD轮播图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            list-style: none;
+        }
+
+        img {
+            display: block;
+            border: none;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        a:hover,
+        a:active,
+        a:target,
+        a:visited {
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .banner-wrapper {
+            overflow: hidden;
+            position: relative;
+
+            width: 790px;
+            height: 340px;
+            margin: 0 auto;
+        }
+
+        .banner-content {
+            background: url("images/jd.gif")no-repeat center center;
+
+            width: 100%;
+            height: 100%;
+        }
+
+        .banner-content li {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        .banner-content img {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .banner-foucus {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            z-index: 10;
+            padding: 4px 8px;
+            border-radius: 12px;
+            /* margin-left: -60px; */
+            -webkit-transform: translateX(-50%);
+            background-color: hsla(0, 0%, 100%, .3);
+        }
+
+        .banner-foucus li {
+            float: left;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+        }
+
+        .banner-wrapper .banner-foucus li:last-child {
+            margin-right: 0;
+        }
+
+        .move {
+            display: none;
+            /* margin-top: -30px; */
+            -webkit-transform: translateY(-50%);
+            line-height: 60px;
+            text-align: center;
+            font-size: 20px;
+            color: #fff;
+            width: 30px;
+            height: 60px;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .move:hover {
+            color: #fff;
+            background: rgba(0, 0, 0, .5);
+        }
+
+        .move-left {
+            position: absolute;
+            z-index: 5;
+            top: 50%;
+            left: 0;
+        }
+
+        .move-right {
+            position: absolute;
+            z-index: 5;
+            top: 50%;
+            right: 0;
+        }
+
+        #bg {
+            background: #db192a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="banner-wrapper" id="bannerWrapper">
+        <ul class="banner-content" id="bannerContent">
+        </ul>
+        <ul class="banner-foucus" id="bannerFocus">
+        </ul>
+        <a href="javascript:;" class="move move-left" id="moveLeft"> &lt; </a>
+        <a href="javascript:;" class="move move-right" id="moveRight"> &gt; </a>
+    </div>
+    <script charset="utf-8" type="text/javascript" src="./utils.js"></script>
+    <script charset="utf-8" type="text/javascript" src="./tween.js"></script>
+    <script charset="utf-8" type="text/javascript">
+        var PHOTOWIDTH = 790;
+        var TIMEOUT = 300;
+        var INTERVAL = 3000;
+        var bannerContent = document.getElementById("bannerContent"),
+            bannerFocus = document.getElementById("bannerFocus"),
+            bannerWrapper = document.getElementById("bannerWrapper"),
+            moveLeft = document.getElementById("moveLeft"),
+            moveRight = document.getElementById("moveRight");
+
+        var imageList = bannerContent.getElementsByTagName("img");
+        var liList = bannerContent.getElementsByTagName("li");
+        var foucsList = bannerFocus.getElementsByTagName("li");
+
+        var facusData = null;
+        // 回调函数是当数据请求回来时候执行
+        function jsonpCallbackFocus(callbackData) {
+            facusData = callbackData.data;
+            console.log(facusData)
+            bindData(facusData);
+            window.setTimeout(lazyImage, TIMEOUT);
+            window.setTimeout(function () {
+                creatFocus(facusData)
+                focusEvent();
+            }, TIMEOUT)
+        }
+        //http://img11.360buyimg.com/da/jfs/t4555/322/3589886827/142359/66551a05/58ffffefN9f8e7e87.jpg
+
+        function bindData(data) {
+            var str = "";
+            for (var i = 0; i < data.length; i++) {
+                var element = data[i];
+                str += "<li>";
+                str += "<a href='http:" + element[0].href + "'>";
+                str += "<img src='' trueImage='https:" + element[0].src + "' alt='" + element[0].alt + "'>";
+                str += "</a>";
+                str += "</li>";
+            }
+            bannerContent.innerHTML = str;
+        }
+
+        function creatFocus(data) {
+            var str = "";
+            for (var i = 0; i < data.length; i++) {
+                var element = data[i];
+                i === 0 ? str += "<li id='bg'></li>" : str += "<li></li>";
+            }
+            bannerFocus.innerHTML = str;
+        }
+
+        function lazyImage() {
+            for (var i = 0; i < imageList.length; i++) {
+                (function (i) {
+                    var element = imageList[i];
+                    var oImg = new Image();
+                    oImg.src = element.getAttribute("trueImage");
+                    oImg.onload = function () {
+                        element.src = this.src;
+                        element.style.display = "block";
+                        if (i === 0) {
+                            var curDiv = element.parentNode.parentNode;
+                            curDiv.style.zIndex = 1;
+                            myanimation(curDiv, {
+                                opacity: 1
+                            }, TIMEOUT)
+                        }
+
+                        oImg = null;
+                    }
+                })(i)
+            }
+        }
+
+        var step = 0;
+        var aotoTimer = setInterval(autoMove, INTERVAL);
+
+        function autoMove() {
+            if (step === facusData.length - 1) {
+                step = -1;
+            }
+            step++;
+            setBanner()
+        }
+
+        function setBanner() {
+            for (var i = 0; i < liList.length; i++) {
+                var element = liList[i];
+                if (i === step) {
+                    utils.css(element, "zIndex", 1)
+                    myanimation(element, {
+                        opacity: 1
+                    }, TIMEOUT, function () {
+                        for (var k = 0; k < liList.length; k++) {
+                            var element = liList[k];
+                            if (k !== step) {
+                                utils.css(element, "opacity", 0)
+                            }
+                        }
+                    })
+                    continue;
+                }
+                utils.css(element, "zIndex", 0)
+            }
+            changeFocus()
+        }
+
+        function changeFocus() {
+            for (var i = 0; i < foucsList.length; i++) {
+                var element = foucsList[i];
+                i === step ? element.id = "bg" : element.id = ""
+            }
+        }
+
+        bannerWrapper.onmouseover = function () {
+            window.clearInterval(aotoTimer);
+            moveLeft.style.display = "block";
+            moveRight.style.display = "block";
+        }
+
+        bannerWrapper.onmouseout = function () {
+            aotoTimer = setInterval(autoMove, INTERVAL);
+            moveLeft.style.display = "none";
+            moveRight.style.display = "none";
+        }
+
+        function focusEvent() {
+            for (var i = 0; i < foucsList.length; i++) {
+                (function (i) {
+                    var element = foucsList[i];
+                    element.onclick = function () {
+                        step = i;
+                        setBanner();
+                    }
+                })(i)
+            }
+        }
+
+        moveRight.onclick = function () {
+            autoMove();
+        }
+
+        moveLeft.onclick = function () {
+            if (step === 0) {
+                step = facusData.length;
+            }
+            step--;
+            setBanner();
+        }
+    </script>
+    <script src="https://f.3.cn/bi/focus_aggr/get?callback=jsonpCallbackFocus&pin=&uuid=1655420409&_=1507973275552"></script>
+</body>
+
+</html>

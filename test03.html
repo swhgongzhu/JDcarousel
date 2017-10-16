@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>指定步长实现单方向运动动画</title>
+    <style>
+        #box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+</body>
+<script src="./utils.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+    var box = document.getElementById('box');
+    var step = 5;
+    var maxLeft = utils.win("clientWidth") - box.offsetWidth;
+    /*
+    var timer = window.setInterval(function () {
+        var curLeft = utils.css(box, "left");
+        if (curLeft + step > maxLeft) {
+            utils.css(box, "left", maxLeft);
+            window.clearInterval(timer);
+            return;
+        }
+        curLeft += step;
+        utils.css(box, "left", curLeft);
+    }, 10)
+    */
+    // setTimeout实现论循动画
+    var timer = null;
+    move();
+    function move() {
+        window.clearInterval(timer);
+        var curLeft = utils.css(box, "left");
+        if (curLeft + step > maxLeft) {
+            utils.css(box, "left", maxLeft);
+            window.clearInterval(timer);
+            return;
+        }
+        curLeft += step;
+        utils.css(box, "left", curLeft);
+        timer = window.setTimeout(move, 10);
+    }
+</script>
+
+</html>

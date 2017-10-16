@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>实现多方向运动动画</title>
+    <style>
+        #box {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            /* -webkit-transform: translateX(-50%); */
+        }
+
+        #btn {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            /* -webkit-transform: translateX(-50%); */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <div id="btn">
+        <button type="button" id="btnLeft">向左</button>
+        <button type="button" id="btnRight">向右</button>
+    </div>
+</body>
+<script src="./utils.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+    var box = document.getElementById('box');
+    var btnLeft = document.getElementById('btnLeft');
+    var btnRight = document.getElementById("btnRight");
+    var maxLeft = utils.win("clientWidth") - box.offsetWidth;
+    var minLeft = 0;
+    var timer = null;
+    function move(target) {
+        _move();
+        // 作用域累加优化
+        function _move() {
+
+            window.clearInterval(timer);
+            var curLeft = utils.css(box, "left");
+            if (curLeft < target) {
+                if (curLeft + 5 >= target) {
+                    utils.css(box, "left", target);
+                    return;
+                }
+                // 向右加
+                curLeft += 5;
+                utils.css(box, "left", curLeft);
+            } else if (curLeft > target) {
+                if (curLeft - 5 <= target) {
+                    utils.css(box, "left", target);
+                    return;
+                }
+                // 向左减
+                curLeft -= 5;
+                utils.css(box, "left", curLeft);
+            } else {
+                return;
+            }
+            timer = window.setTimeout(_move, 10);
+        }
+    }
+
+    btnLeft.onclick = function () {
+        move(minLeft)
+    };
+    btnRight.onclick = function () {
+        move(maxLeft)
+    };
+
+</script>
+
+</html>
